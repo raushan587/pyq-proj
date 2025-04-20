@@ -1,0 +1,139 @@
+<%- include('partials/header') %> <!-- Include the header -->
+
+<main>
+  <!-- Search Question Papers Section -->
+  <section class="search-container">
+    <h2>Find Question Papers</h2>
+    <form id="searchForm" method="GET" action="/pyq">
+      <div class="form-group">
+        <label for="branch">Select Branch</label>
+        <select id="branch" name="branch" required>
+          <option value="">-- Select Branch --</option>
+          <option value="cse">CSE</option>
+          <option value="aiml">AI & Machine Learning</option>
+          <option value="ds">Data Science</option>
+          <option value="iot">Internet of Things</option>
+          <option value="cyber">Cyber Security</option>
+          <option value="ece">Electronics & Communication</option>
+          <option value="electrical">Electrical Engineering</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="year">Select Year</label>
+        <select id="year" name="year" required>
+          <option value="">-- Select Year --</option>
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+          <option value="2022">2022</option>
+          <option value="2021">2021</option>
+          <option value="2020">2020</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="semester">Select Semester</label>
+        <select id="semester" name="semester" required>
+          <option value="">-- Select Semester --</option>
+          <option value="1">1st Semester</option>
+          <option value="2">2nd Semester</option>
+          <option value="3">3rd Semester</option>
+          <option value="4">4th Semester</option>
+          <option value="5">5th Semester</option>
+          <option value="6">6th Semester</option>
+          <option value="7">7th Semester</option>
+          <option value="8">8th Semester</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <button type="submit" id="searchButton">Search Papers</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Display question papers after search -->
+  <section id="searchResults">
+    <h3>Question Papers</h3>
+    <ul id="paperList">
+      <% if (typeof searched !== 'undefined' && searched) { %>
+        <% if (questionPapers && questionPapers.length > 0) { %>
+          <% questionPapers.forEach(paper => { %>
+            <li>
+              <span><%= paper.subject %> - <%= paper.year %> - <%= paper.semester %></span>
+              <button class="download-btn" data-id="<%= paper._id %>">Download</button>
+            </li>
+          <% }) %>
+        <% } else { %>
+          <li>No question papers found for the selected filters.</li>
+        <% } %>
+      <% } else { %>
+        <li>No filters applied.</li>
+      <% } %>
+    </ul>
+  </section>
+
+  <!-- Upload Section (for Admin only) -->
+  <% if (user && user.role === 'admin') { %>
+    <section class="upload-container">
+      <h2>Upload Question Paper</h2>
+      <form action="/pyq/upload" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="uploadBranch">Select Branch</label>
+          <select name="branch" id="uploadBranch" required>
+            <option value="CSE">CSE</option>
+            <option value="AIML">AIML</option>
+            <option value="DS">Data Science</option>
+            <option value="IoT">IoT</option>
+            <option value="ECE">ECE</option>
+            <option value="Electrical">Electrical</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="uploadSemester">Select Semester</label>
+          <select name="semester" id="uploadSemester" required>
+            <option value="1">Semester 1</option>
+            <option value="2">Semester 2</option>
+            <option value="3">Semester 3</option>
+            <option value="4">Semester 4</option>
+            <option value="5">Semester 5</option>
+            <option value="6">Semester 6</option>
+            <option value="7">Semester 7</option>
+            <option value="8">Semester 8</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="uploadYear">Select Year</label>
+          <select name="year" id="uploadYear" required>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="uploadSubject">Subject</label>
+          <input type="text" name="subject" id="uploadSubject" required />
+        </div>
+
+        <div class="form-group">
+          <label for="pdfFile">Choose PYQ PDF</label>
+          <input type="file" name="pdfFile" required />
+        </div>
+
+        <button type="submit">Upload PYQ</button>
+      </form>
+    </section>
+  <% } %>
+</main>
+
+<%- include('partials/footer') %> <!-- Include the footer -->
+
+<!-- CSS & JS -->
+<link rel="stylesheet" href="/css/pyq.css">
+<script src="/js/scriptt.js"></script>
+<script src="/js/pyq.js"></script>

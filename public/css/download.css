@@ -1,0 +1,67 @@
+/* Style for the download page */
+.download-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .question-paper-details {
+    text-align: left;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+  }
+  
+  .question-paper-details p {
+    margin: 10px 0;
+  }
+  
+  strong {
+    color: #007bff;
+  }
+  
+  .download-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    color: #fff;
+    background-color: #007bff;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .download-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  @media (max-width: 600px) {
+    .download-container {
+      padding: 15px;
+    }
+  
+    h2 {
+      font-size: 1.5rem;
+    }
+  
+    .question-paper-details {
+      font-size: 1rem;
+    }
+  
+    .download-btn {
+      padding: 10px 20px;
+    }
+  }
+  

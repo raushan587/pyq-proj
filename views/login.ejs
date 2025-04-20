@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Animated Login Form</title>
+
+    <!-- Link to the login.css file from the public folder -->
+    <link rel="stylesheet" type="text/css" href="/css/login.css">
+
+    <!-- Google Font Poppins -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/a81368914c.js"></script>
+</head>
+<body>
+    <img class="wave" src="https://github.com/sefyudem/Responsive-Login-Form/blob/master/img/wave.png?raw=true">
+
+    <div class="container">
+        <div class="img">
+            <img src="https://raw.githubusercontent.com/sefyudem/Responsive-Login-Form/82b8d8efd3b0ac6382b9d0d71a99c6cf9dcefa23/img/bg.svg">
+        </div>
+
+        <div class="login-content">
+            <form action="/login" method="POST">
+                <img src="https://raw.githubusercontent.com/sefyudem/Responsive-Login-Form/82b8d8efd3b0ac6382b9d0d71a99c6cf9dcefa23/img/avatar.svg">
+                <h2 class="title">Welcome</h2>
+
+                <div class="input-div one">
+                    <div class="i">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Username</h5>
+                        <input type="text" name="username" class="input" required>
+                    </div>
+                </div>
+
+                <div class="input-div pass">
+                    <div class="i">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Password</h5>
+                        <input type="password" name="password" class="input" id="password" required>
+                    </div>
+                </div>
+
+                <a href="#">Forgot Password?</a>
+
+                <div style="display: flex; gap: 10px; justify-content: space-between;">
+                    <input type="submit" class="btn" value="Login" style="flex: 1;">
+                    <input type="button" class="btn" value="Signup" onclick="location.href='/signup'" style="flex: 1;">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Link to the login.js file from the public folder -->
+    <script type="text/javascript" src="/js/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<%- include('partials/header') %> <!-- Include the header -->
+
+<!-- Link to your download.css file -->
+<link rel="stylesheet" href="/css/download.css"> <!-- Link to your download page CSS -->
+
+<main>
+  <section class="download-container">
+    <h2>Download Question Paper</h2>
+
+    <!-- Displaying the question paper details -->
+    <div class="question-paper-details">
+      <p><strong>Subject:</strong> <%= questionPaper.subject %></p>
+      <p><strong>Year:</strong> <%= questionPaper.year %></p>
+      <p><strong>Semester:</strong> <%= questionPaper.semester %></p>
+      <p><strong>Branch:</strong> <%= questionPaper.branch %></p>
+    </div>
+
+    <!-- Link to download the PDF -->
+    <a href="/<%= questionPaper.filePath.replace(/\\/g, '/') %>" class="download-btn" download>
+      Download PDF
+    </a>
+  </section>
+</main>
+
+<%- include('partials/footer') %> <!-- Include the footer -->
