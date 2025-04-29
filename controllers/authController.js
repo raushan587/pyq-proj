@@ -23,7 +23,7 @@ const user = await User.findOne({ email: req.body.email });
     if (!isMatch) return res.send('Invalid email or password');
 
     const token = jwt.sign(
-      { id: user._id, username: user.username, role: user.role }, // ← include role
+      { id: user._id, username: user.username, email: user.email ,role: user.role }, // ← include role
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );

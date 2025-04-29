@@ -14,6 +14,7 @@ require('./config/db')();  // Ensure your database connection is established
 // const subjectRoutes = require('./routes/Subject'); // Uncomment if needed
 const pyqRoutes = require('./routes/pyq');
 const authRoutes = require('./routes/auth');
+const doubtRoutes = require('./routes/doubt'); // ✅ Add this line here
 
 // 1. Set EJS as the view engine
 app.set('view engine', 'ejs');
@@ -25,16 +26,19 @@ app.use(express.urlencoded({ extended: true })); // For form submissions
 app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 app.use(cookieParser()); // Cookie parser
 
-// Attach user to locals
-/*app.use((req, res, next) => {
+// Attach user to locals (commented out)
+/*
+app.use((req, res, next) => {
   res.locals.user = req.user || null;
   next();
-});*/
+});
+*/
 
 // 3. Routes
 // app.use('/subjects', subjectRoutes); // Uncomment if needed
 app.use('/', authRoutes); // Login, Signup, etc.
 app.use('/pyq', pyqRoutes); // PYQ-related routes
+app.use('/doubt', doubtRoutes); 
 
 // 4. 404 error handler
 app.use((req, res, next) => {
@@ -50,7 +54,5 @@ app.use((err, req, res, next) => {
 // 6. Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(` Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
-
- // index.js
