@@ -7,7 +7,7 @@ const { QuestionPaper } = require('../models/questionPaper');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const { branch, semester } = req.body;
-    const dir = path.join(__dirname, '..', 'uploads', branch, `sem${semester}`);  // Corrected string interpolation
+    const dir = path.join(__dirname, '..', 'uploads', branch, `sem${semester}`); 
     
     // Create directory if it doesn't exist
     fs.mkdirSync(dir, { recursive: true });
@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const { branch, semester } = req.body;
-    const fileName = `${branch}_sem${semester}_${Date.now()}${path.extname(file.originalname)}`;  // Corrected string interpolation
+    const fileName = `${branch}_sem${semester}_${Date.now()}${path.extname(file.originalname)}`;  
     cb(null, fileName);
   }
 });
@@ -47,7 +47,7 @@ const uploadQuestionPaper = async (req, res) => {
       semester,
       year,
       subject,
-      filePath: uploadedFile.path,  // Store relative path in the DB
+      filePath: uploadedFile.path,  
       fileName: uploadedFile.filename,
       uploadedAt: new Date(),
     });
@@ -65,7 +65,7 @@ const searchQuestionPapers = async (req, res) => {
     const { branch, semester, year, subject } = req.query;
 
     const query = {};
-    if (branch) query.branch = { '$regex': new RegExp(branch, 'i') };  // Case-insensitive search
+    if (branch) query.branch = { '$regex': new RegExp(branch, 'i') };  
     if (semester) query.semester = semester;
     if (year) query.year = year;
     if (subject) query.subject = subject;
@@ -93,7 +93,7 @@ const renderPyqPage = async (req, res) => {
     if (year) query.year = year;
     if (subject) query.subject = subject;
 
-    console.log("Running query:", query);  //  Log the query
+    console.log("Running query:", query);  
 
     let questionPapers = [];
     let message = '';
@@ -103,7 +103,7 @@ const renderPyqPage = async (req, res) => {
       searched = true;
       questionPapers = await QuestionPaper.find(query);
 
-      console.log("Found question papers:", questionPapers);  //  Log the result
+      console.log("Found question papers:", questionPapers);  
 
       if (!questionPapers.length) {
         message = 'No question papers found for the selected filters.';
@@ -126,19 +126,19 @@ const renderPyqPage = async (req, res) => {
 const downloadQuestionPaper = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('Download requested for Question Paper ID:', id); // Log the ID
+    console.log('Download requested for Question Paper ID:', id); 
 
     const questionPaper = await QuestionPaper.findById(id);
     if (!questionPaper) {
-      console.log('No question paper found for ID:', id); // Log if no paper is found
+      console.log('No question paper found for ID:', id); //
       return res.status(404).json({ message: 'Question paper not found.' });
     }
 
     const filePath = path.resolve(questionPaper.filePath);  // Use absolute path resolution
-    console.log('File Path:', filePath); // Log the file path
+    console.log('File Path:', filePath); 
     // Validate the file path is under the uploads directory
     if (!filePath.startsWith(path.resolve('./uploads/'))) {
-      console.log('Invalid file path:', filePath); // Log if file path is invalid
+      console.log('Invalid file path:', filePath); // 
       return res.status(400).json({ message: 'Invalid file path.' });
     }
 
