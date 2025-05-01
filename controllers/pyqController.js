@@ -122,7 +122,7 @@ const renderPyqPage = async (req, res) => {
   }
 };
 
-// ⬇ Download Question Paper by ID
+//  Download Question Paper by ID
 const downloadQuestionPaper = async (req, res) => {
   try {
     const { id } = req.params;
