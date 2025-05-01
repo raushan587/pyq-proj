@@ -2,14 +2,13 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const Doubt = require('../models/doubt');  // Mongoose model for doubts
-const verifyToken = require('../middleware/verifyToken');  // JWT verification middleware
+const Doubt = require('../models/doubt');  
+const verifyToken = require('../middleware/verifyToken');  
 const router = express.Router();
 
 // Define the upload directory path
 const uploadDir = path.join(__dirname, '..', 'uploads', 'doubts');
 
-// Ensure the directory exists
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -17,21 +16,21 @@ if (!fs.existsSync(uploadDir)) {
 // Multer configuration for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, uploadDir);  // Specify where to store the uploaded files
+    cb(null, uploadDir);  
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // Ensure unique filenames using timestamp
+    cb(null, Date.now() + path.extname(file.originalname)); 
   }
 });
 
 const upload = multer({ storage });
 
-// GET: Ask doubt form (protected route, only accessible by authenticated users)
+// GET: Ask doubt form
 router.get('/ask', verifyToken, (req, res) => {
-  res.render('doubtForm');  // Render the 'doubtForm.ejs' view for the form
+  res.render('doubtForm'); 
 });
 
-// POST: Submit a doubt (protected route, only accessible by authenticated users)
+// POST: 
 router.post('/ask', verifyToken, upload.single('image'), async (req, res) => {
   const { text } = req.body;
   const imagePath = req.file ? `/uploads/doubts/${req.file.filename}` : null;  // Handle file path for image upload
@@ -39,28 +38,28 @@ router.post('/ask', verifyToken, upload.single('image'), async (req, res) => {
   try {
     // Save the doubt in the database using the user's email from the JWT
     await Doubt.create({
-      userEmail: req.user.email,  // Using email instead of ObjectId (from the JWT)
+      userEmail: req.user.email,  
       text,
       image: imagePath
     });
-    res.redirect('/doubt/all');  // Redirect to the page displaying all doubts
+    res.redirect('/doubt/all');  
   } catch (error) {
-    console.error('❌ Error creating doubt:', error);
+    console.error(' Error creating doubt:', error);
     res.status(500).send('Something went wrong while posting the doubt.');
   }
 });
 
-// GET: View all doubts (this route shows all doubts posted by users)
+// GET: 
 
   router.get('/all', verifyToken, async (req, res) => {
     try {
-      // Fetch all doubts and populate the user details (email in this case)
-      const doubts = await Doubt.find().populate('userEmail', 'email'); // Populate with email
+      
+      const doubts = await Doubt.find().populate('userEmail', 'email'); 
   
-      // Render the 'doubts.ejs' view and pass both the doubts data and currentUserEmail
+      // Render the 'doubts.ejs' view 
       res.render('doubts', { doubts, currentUserEmail: req.user.email });
     } catch (error) {
-      console.error('❌ Error fetching doubts:', error);
+      console.error(' Error fetching doubts:', error);
       res.status(500).send('Error fetching doubts.');
     }
   });
@@ -82,7 +81,7 @@ router.post('/reply/:id', verifyToken, async (req, res) => {
       await doubt.save();
       res.redirect('/doubt/all');
     } catch (error) {
-      console.error('❌ Error replying to doubt:', error);
+      console.error(' Error replying to doubt:', error);
       res.status(500).send('Reply failed');
     }
   });

@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
   },
   isVerified: {
     type: Boolean,
-    default: false, // You can use this for email verification flow
+    default: false, 
   },
   role: {
     type: String,

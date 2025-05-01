@@ -12,9 +12,7 @@ exports.loginUser = async (req, res) => {
       return res.status(400).send('Please provide both email and password');
     }
 
-    // You can also allow login by email, optional
-    //const user = await User.findOne({ username }); // Or use: { $or: [{ username }, { email: username }] }
-// In your authController.js or login controller
+    
 const user = await User.findOne({ email: req.body.email });
 
     if (!user) return res.send('Invalid email or password');
@@ -23,7 +21,7 @@ const user = await User.findOne({ email: req.body.email });
     if (!isMatch) return res.send('Invalid email or password');
 
     const token = jwt.sign(
-      { id: user._id, username: user.username, email: user.email ,role: user.role }, // ← include role
+      { id: user._id, username: user.username, email: user.email ,role: user.role }, 
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );

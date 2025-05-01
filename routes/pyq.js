@@ -11,7 +11,7 @@ const { QuestionPaper } = require('../models/questionPaper');
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
     const { branch, semester } = req.body;
-    const dir = `./uploads/${branch}/sem${semester}`; //  fixed template literal
+    const dir = `./uploads/${branch}/sem${semester}`; 
     try {
       // Ensuring directory is created if it doesn't exist
       await fs.promises.mkdir(dir, { recursive: true });
@@ -29,7 +29,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max file size
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB limit
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['.pdf'];
     const ext = path.extname(file.originalname);
@@ -59,7 +59,7 @@ async function renderPyqPage(res, query = {}, user = null, message = '') {
       year: query.year || '',
       subject: query.subject || '',
       message,
-      searched: true // This enables result rendering
+      searched: true 
     });
   } catch (error) {
     console.error(' Error fetching question papers:', error);
@@ -67,11 +67,11 @@ async function renderPyqPage(res, query = {}, user = null, message = '') {
   }
 }
 
-// GET: Load the PYQ page only if filters are provided
+// GET: 
 router.get('/', verifyToken, async (req, res) => {
   const { branch, semester, year, subject } = req.query;
 
-  // If no filters are applied, prompt the user
+  
   if (!branch || !semester || !year) {
     return res.render('pyq', {
       user: res.locals.user,
@@ -155,10 +155,10 @@ router.get('/download/:id', async (req, res) => {
 
     // Ensuring the path uses the correct separator and is resolved correctly
     const filePath = path.resolve(questionPaper.filePath.replace(/\\/g, "/"));
-    console.log("Resolved file path:", filePath);  // Check if this path is correct
+    console.log("Resolved file path:", filePath);  
 
     if (!fs.existsSync(filePath)) {
-      console.error("File does not exist:", filePath);  // Debugging: Check if the file exists
+      console.error("File does not exist:", filePath);  
       return res.status(404).json({ message: 'File not found.' });
     }
 
