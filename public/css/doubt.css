@@ -76,4 +76,23 @@ body {
   .view-doubts a:hover {
     text-decoration: underline;
   }
+  .ask-assistant {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .ask-assistant a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #00b894;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .ask-assistant a:hover {
+    background-color: #019875;
+  }
   
