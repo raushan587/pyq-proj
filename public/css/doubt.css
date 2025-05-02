@@ -1,98 +1,148 @@
+/* Link Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f4f7fa;
-    margin: 0;
-    padding: 0;
-    color: #333;
-  }
-  
-  .container {
-    width: 90%;
-    max-width: 600px;
-    margin: 40px auto;
-    background: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  h1 {
-    text-align: center;
-    color: #2c3e50;
-    margin-bottom: 25px;
-  }
-  
-  .doubt-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  label {
-    font-weight: 600;
-    color: #34495e;
-  }
-  
-  textarea {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 15px;
-    resize: vertical;
-  }
-  
-  input[type="file"] {
-    border: none;
-    font-size: 14px;
-  }
-  
-  button {
-    padding: 12px;
-    background-color: #27ae60;
-    color: white;
-    font-size: 15px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-  
-  button:hover {
-    background-color: #219150;
-  }
-  
-  .view-doubts {
-    margin-top: 20px;
-    text-align: center;
-  }
-  
-  .view-doubts a {
-    color: #3498db;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-  .view-doubts a:hover {
-    text-decoration: underline;
-  }
-  .ask-assistant {
-    margin-top: 20px;
-    text-align: center;
-  }
-  
-  .ask-assistant a {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #00b894;
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-  
-  .ask-assistant a:hover {
-    background-color: #019875;
-  }
-  
+  font-family: 'Poppins', sans-serif;
+  background: #f7f9fc;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  width: 90%;
+  max-width: 800px;
+  margin: 50px auto;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 30px;
+  font-size: 28px;
+}
+
+.doubt-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+label {
+  font-weight: 500;
+  color: #34495e;
+  font-size: 16px;
+}
+
+textarea {
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  background: #f4f7fa;
+  transition: border-color 0.2s ease;
+}
+
+textarea:focus {
+  border-color: #27ae60;
+  outline: none;
+}
+
+input[type="file"] {
+  border: none;
+  font-size: 14px;
+  color: #34495e;
+}
+
+button {
+  padding: 16px 28px;
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 50px; /* Rounded for modern look */
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  transform: scale(1.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+  transform: scale(1);
+}
+
+button:focus {
+  outline: none;
+}
+
+.view-doubts {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.view-doubts a {
+  color: #3498db;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.view-doubts a:hover {
+  color: #2c3e50;
+  text-decoration: underline;
+  transform: scale(1.05);
+}
+
+.ask-assistant {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.ask-assistant a {
+  display: inline-block;
+  padding: 14px 30px;
+  background: linear-gradient(45deg, #00b894, #1abc9c);
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: bold;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.ask-assistant a:hover {
+  background: linear-gradient(45deg, #019875, #00b894);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.ask-assistant a:active {
+  transform: translateY(1px);
+}
+
+.ask-assistant a:focus {
+  outline: none;
+}
+
+
+

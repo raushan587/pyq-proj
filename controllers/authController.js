@@ -1,31 +1,66 @@
+
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-// LOGIN
+// Setup Nodemailer transport
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
+  },
+});
+
+// Send verification email
+const sendVerificationEmail = async (user, req) => {
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+  
+  const verificationUrl = `${req.protocol}://${req.get('host')}/verify-email?token=${token}`;
+
+  await transporter.sendMail({
+    from: process.env.GMAIL_USER, // Use the correct environment variable
+    to: user.email,
+    subject: 'Verify Your Email',
+    html: `<p>Hello ${user.username},</p>
+           <p>Please click the link below to verify your email:</p>
+           <p><a href="${verificationUrl}">${verificationUrl}</a></p>`,
+  });
+};
+
+// LOGIN - User login functionality
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
- 
+
   try {
     if (!email || !password) {
       return res.status(400).send('Please provide both email and password');
     }
 
-    
-const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ email });
 
-    if (!user) return res.send('Invalid email or password');
+    if (!user) {
+      return res.status(400).send('Invalid email or password');
+    }
+
+    if (!user.isVerified) {
+      return res.status(403).send('Please verify your email before logging in.');
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.send('Invalid email or password');
+    if (!isMatch) {
+      return res.status(400).send('Invalid email or password');
+    }
 
     const token = jwt.sign(
-      { id: user._id, username: user.username, email: user.email ,role: user.role }, 
+      { id: user._id, username: user.username, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-    
+
     res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
     res.redirect('/pyq');
   } catch (err) {
@@ -34,7 +69,7 @@ const user = await User.findOne({ email: req.body.email });
   }
 };
 
-// SIGNUP
+// SIGNUP - User signup functionality
 exports.signupUser = async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
@@ -47,31 +82,66 @@ exports.signupUser = async (req, res) => {
   }
 
   try {
-    // Check if username or email already exists
-    //const existing = await User.findOne({ $or: [{ username }, { email }] });
-    //if (existing) {
-    //  return res.status(400).send('Username or email already exists');
-//}
-const existingEmail = await User.findOne({ email });
-if (existingEmail) {
-  return res.status(400).send('Email already exists');
-}
+    // Log the signup attempt for debugging
+    console.log('Signup attempt with email:', email);
 
-    const hashed = await bcrypt.hash(password, 10);
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      console.log('Email already found in DB:', existingEmail.email);
+      return res.status(400).send('Email already exists');
+    }
+
+    console.log('Proceeding to save user with email:', email);
+
+    // Hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = new User({
       username,
       email,
-      password: hashed,
+      password: hashedPassword,
+      isVerified: false, // New users are not verified initially
     });
 
     await newUser.save();
 
-    res.redirect('/login');
+    // Send verification email after user is created
+    await sendVerificationEmail(newUser, req);
+
+    res.status(200).send('Signup successful! Please check your email to verify your account.');
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
   }
 };
+
+// VERIFY EMAIL - Email verification functionality
+exports.verifyEmail = async (req, res) => {
+  const { token } = req.query;
+
+  try {
+    // Decode the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(400).send('Invalid verification link');
+    }
+
+    if (user.isVerified) {
+      return res.send('Email already verified');
+    }
+
+    user.isVerified = true;
+    await user.save();
+
+    res.status(200).send('Email verified successfully! You can now log in.');
+  } catch (err) {
+    console.error(err);
+    res.status(400).send('Invalid or expired token.');
+  }
+};
+
 // authcontroller
 
 

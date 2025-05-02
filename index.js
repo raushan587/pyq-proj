@@ -5,8 +5,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const assistantRoutes = require('./routes/assistant');
-const apiRoutes = require('./routes/api');
-
+const apiRoutes = require('./routes/api'); 
 const app = express(); 
 
 // DB connection

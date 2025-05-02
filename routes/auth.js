@@ -19,6 +19,6 @@ router.post('/login', authController.loginUser);
 
 // Route to handle signup
 router.post('/signup', authController.signupUser);
-
+router.get('/verify-email', authController.verifyEmail);
 module.exports = router;
 console.log(authController);//auth.js
