@@ -17,12 +17,14 @@
         <img src="<%= doubt.image %>" alt="Doubt image" style="max-width: 200px;">
       <% } %>
 
-      <!-- DELETE BUTTON: Only show if logged-in user is the owner -->
+      <!-- DELETE BUTTON:  -->
       <% if (currentUserEmail === doubt.userEmail) { %>
         <form action="/doubt/delete/<%= doubt._id %>" method="POST" style="display:inline;">
-          <button type="submit" style="background-color: red; color: white;">Delete</button>
+          <input type="hidden" name="_method" value="DELETE" />
+          <button type="submit" style="background-color: red; color: white;">Delete Doubt</button>
         </form>
       <% } %>
+      
 
       <!-- REPLY FORM -->
       <form action="/doubt/reply/<%= doubt._id %>" method="POST">
@@ -38,6 +40,13 @@
             <div class="reply">
               <strong><%= reply.userEmail %>:</strong> <%= reply.text %><br>
               <span class="timestamp"><%= new Date(reply.createdAt).toLocaleString() %></span>
+              <!-- DELETE BUTTON -->
+              <% if (currentUserEmail === reply.userEmail) { %>
+                <form action="/doubt/delete/reply/<%= doubt._id %>/<%= reply._id %>" method="POST" style="display:inline;">
+                  <input type="hidden" name="_method" value="DELETE" />
+                  <button type="submit" style="background-color: red; color: white;">Delete Reply</button>
+                </form>
+              <% } %>
             </div>
           <% }) %>
         </div>
@@ -46,4 +55,3 @@
   <% }); %>
 </body>
 </html>
-

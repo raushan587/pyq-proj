@@ -1,43 +1,44 @@
-require('dotenv').config(); // Load environment variables
-
+require('dotenv').config(); // environment variables
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const methodOverride = require('method-override'); 
 const assistantRoutes = require('./routes/assistant');
-const apiRoutes = require('./routes/api'); 
-const app = express(); 
-
-// DB connection
-require('./config/db')();  
-
+const apiRoutes = require('./routes/api');
 const pyqRoutes = require('./routes/pyq');
 const authRoutes = require('./routes/auth');
-const doubtRoutes = require('./routes/doubt'); 
+const doubtRoutes = require('./routes/doubt');
 
-//  EJS as the view engine
+const app = express();
+
+// DB connection
+require('./config/db')();
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-//  Middlewares
-app.use(express.json()); //  JSON body parsing
-app.use(express.urlencoded({ extended: true })); // form submissions
-app.use(express.static(path.join(__dirname, 'public'))); //  static files
-app.use(cookieParser()); // Cookie parser
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
+app.use(methodOverride(function (req, res) {
+  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+    console.log('methodOverride triggered:', req.body._method); 
+    return req.body._method; 
+  }
+}));
+
+app.use(methodOverride('_method')); 
+app.use(express.static(path.join(__dirname, 'public'))); 
+app.use(cookieParser()); 
+
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Routes
 app.use('/assistant', assistantRoutes);
 app.use('/api', apiRoutes);
-
-/*
-app.use((req, res, next) => {
-  res.locals.user = req.user || null;
-  next();
-});
-*/
-
-//  Routes
-
-app.use('/', authRoutes); // Login, Signup, etc.
-app.use('/pyq', pyqRoutes); // PYQ-related routes
+app.use('/', authRoutes); 
+app.use('/pyq', pyqRoutes); 
 app.use('/doubt', doubtRoutes); 
 
 // 404 error handler
@@ -51,7 +52,7 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong!');
 });
 
-//  Start server
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
