@@ -1,55 +1,57 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { QuestionPaper } = require('../models/questionPaper');
+const { QuestionPaper } = require('../models/questionPaper'); 
 
-//  Configure Multer storage
+// Set up Multer storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const { branch, semester } = req.body;
-    const dir = path.join(__dirname, '..', 'uploads', branch, `sem${semester}`); 
+    const { branch, semester } = req.body; 
+    const dir = path.join(__dirname, '..', 'uploads', branch, `sem${semester}`);
+
     
-    // Create directory if it doesn't exist
     fs.mkdirSync(dir, { recursive: true });
-    
     cb(null, dir);
   },
   filename: (req, file, cb) => {
     const { branch, semester } = req.body;
-    const fileName = `${branch}_sem${semester}_${Date.now()}${path.extname(file.originalname)}`;  
+    const fileName = `${branch}_sem${semester}_${Date.now()}${path.extname(file.originalname)}`;
     cb(null, fileName);
   }
 });
 
 const upload = multer({ storage });
 
-//  Upload Controller (Admins only)
+
 const uploadQuestionPaper = async (req, res) => {
   try {
+    // Check if the user is an admin
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Only admins can upload question papers.' });
     }
 
-    const { branch, semester, year, subject } = req.body;
+    const { branch, semester } = req.body;
     const uploadedFile = req.file;
 
+    
     if (!uploadedFile) {
       return res.status(400).json({ message: 'No file uploaded.' });
     }
 
+  
     const allowedExtensions = ['.pdf', '.docx'];
-    if (!allowedExtensions.includes(path.extname(uploadedFile.originalname).toLowerCase())) {
+    const fileExt = path.extname(uploadedFile.originalname).toLowerCase();
+
+    if (!allowedExtensions.includes(fileExt)) {
       return res.status(400).json({ message: 'Only PDF and DOCX files are allowed.' });
     }
 
+    
     const newQuestionPaper = await QuestionPaper.create({
       branch,
       semester,
-      year,
-      subject,
-      filePath: uploadedFile.path,  
+      filePath: uploadedFile.path,
       fileName: uploadedFile.filename,
-      uploadedAt: new Date(),
     });
 
     res.status(200).json({ message: 'Question paper uploaded successfully.', data: newQuestionPaper });
@@ -59,62 +61,51 @@ const uploadQuestionPaper = async (req, res) => {
   }
 };
 
-// Search Controller
-const searchQuestionPapers = async (req, res) => {
-  try {
-    const { branch, semester, year, subject } = req.query;
 
-    const query = {};
-    if (branch) query.branch = { '$regex': new RegExp(branch, 'i') };  
-    if (semester) query.semester = semester;
-    if (year) query.year = year;
-    if (subject) query.subject = subject;
-
-    const questionPapers = await QuestionPaper.find(query);
-    if (!questionPapers.length) {
-      return res.status(404).json({ message: 'No question papers found for the given criteria.' });
-    }
-
-    res.status(200).json(questionPapers);
-  } catch (error) {
-    console.error('Search error:', error);
-    res.status(500).json({ message: 'Failed to fetch question papers.' });
-  }
-};
-
-//  Render PYQ Dashboard Page
 const renderPyqPage = async (req, res) => {
   try {
-    const { branch, semester, year, subject } = req.query;
+    const { branch, semester } = req.params;  
     const query = {};
-
-    if (branch) query.branch = branch;
-    if (semester) query.semester = semester;
-    if (year) query.year = year;
-    if (subject) query.subject = subject;
-
-    console.log("Running query:", query);  
-
     let questionPapers = [];
+    let files = [];
     let message = '';
     let searched = false;
 
-    if (Object.keys(query).length) {
+    
+    if (branch) query.branch = branch;
+    if (semester) query.semester = Number(semester);  
+
+    if (branch && semester) {
       searched = true;
+      console.log('Querying for:', query);
+
+    
       questionPapers = await QuestionPaper.find(query);
 
-      console.log("Found question papers:", questionPapers);  
+    
+      console.log('Fetched question papers:', questionPapers);
 
-      if (!questionPapers.length) {
-        message = 'No question papers found for the selected filters.';
+      
+      const dirPath = path.join(__dirname, '..', 'uploads', branch, `sem${semester}`);
+      if (fs.existsSync(dirPath)) {
+        files = fs.readdirSync(dirPath);
+      }
+
+      
+      if (!questionPapers.length && !files.length) {
+        message = 'No question papers or files found for the selected filters.';
       }
     }
 
+    
     res.render('pyq', {
       user: req.user,
+      branch,
+      semester,
       questionPapers,
+      files,
       message,
-      searched
+      searched,
     });
   } catch (error) {
     console.error('Render error:', error);
@@ -122,27 +113,25 @@ const renderPyqPage = async (req, res) => {
   }
 };
 
-//  Download Question Paper by ID
+
 const downloadQuestionPaper = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('Download requested for Question Paper ID:', id); 
-
     const questionPaper = await QuestionPaper.findById(id);
+
     if (!questionPaper) {
-      console.log('No question paper found for ID:', id); //
       return res.status(404).json({ message: 'Question paper not found.' });
     }
 
-    const filePath = path.resolve(questionPaper.filePath);  // Use absolute path resolution
-    console.log('File Path:', filePath); 
-    // Validate the file path is under the uploads directory
+    const filePath = path.resolve(questionPaper.filePath);
     if (!filePath.startsWith(path.resolve('./uploads/'))) {
-      console.log('Invalid file path:', filePath); // 
       return res.status(400).json({ message: 'Invalid file path.' });
     }
 
-    // Start the download
+    
+    console.log('Downloading file from path:', filePath);
+
+    
     res.download(filePath, questionPaper.fileName, (err) => {
       if (err) {
         console.error('Download error:', err);
@@ -158,7 +147,7 @@ const downloadQuestionPaper = async (req, res) => {
 module.exports = {
   upload,
   uploadQuestionPaper,
-  searchQuestionPapers,
   renderPyqPage,
   downloadQuestionPaper,
 };
+

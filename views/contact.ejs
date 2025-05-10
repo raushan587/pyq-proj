@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Us</title>
+    <link rel="stylesheet" href="/css/contact.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <section class="contact-section">
+        <h1>Contact Us</h1>
+
+        <div class="contact-content">
+            <div class="contact-info">
+                <p><span>Phone :</span> +91-7061405072</p>
+                <p><span>Address :</span> Bhopal, Madhya Pradesh</p>
+                <p><span>Email :</span> contact raushanchy71@gmail.com</p>
+            </div>
+
+            <form class="contact-form">
+                <div class="form-row">
+                    <input type="text" placeholder="Name*" required>
+                    <input type="email" placeholder="E-mail*" required>
+                </div>
+                <textarea placeholder="Message*" required></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    
+</body>
+</html>

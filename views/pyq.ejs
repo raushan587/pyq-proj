@@ -1,143 +1,80 @@
-<%- include('partials/header') %> <!-- Include the header -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PYQ & Notes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/pyq.css"/>
+</head>
+<body>
 
-<main>
-  <!-- Search Question Papers Section -->
-  <section class="search-container">
-    <h2>Find Question Papers</h2>
-    <form id="searchForm" method="GET" action="/pyq">
-      <div class="form-group">
-        <label for="branch">Select Branch</label>
-        <select id="branch" name="branch" required>
-          <option value="">-- Select Branch --</option>
-          <option value="cse">CSE</option>
-          <option value="aiml">AI & Machine Learning</option>
-          <option value="ds">Data Science</option>
-          <option value="iot">Internet of Things</option>
-          <option value="cyber">Cyber Security</option>
-          <option value="ece">Electronics & Communication</option>
-          <option value="electrical">Electrical Engineering</option>
-        </select>
+  <%- include("partials/header") %>
+
+  <main class="branch-container">
+    <% if (!branch) { %>
+      <h1>Select Your Branch</h1>
+      <div class="branches">
+        <div class="branch-card"><h2>CSE</h2><a href="/pyq/CSE"><button>Click Here</button></a></div>
+        <div class="branch-card"><h2>AI</h2><a href="/pyq/AI"><button>Click Here</button></a></div>
+        <div class="branch-card"><h2>ECE</h2><a href="/pyq/ECE"><button>Click Here</button></a></div>
+        <div class="branch-card"><h2>EEE</h2><a href="/pyq/EEE"><button>Click Here</button></a></div>
+        <div class="branch-card"><h2>Mechanical</h2><a href="/pyq/Mechanical"><button>Click Here</button></a></div>
+        <div class="branch-card"><h2>IoT</h2><a href="/pyq/IoT"><button>Click Here</button></a></div>
+        <div class="branch-card"><h2>Civil</h2><a href="/pyq/Civil"><button>Click Here</button></a></div>
       </div>
-
-      <div class="form-group">
-        <label for="year">Select Year</label>
-        <select id="year" name="year" required>
-          <option value="">-- Select Year --</option>
-          <option value="2024">2024</option>
-          <option value="2023">2023</option>
-          <option value="2022">2022</option>
-          <option value="2021">2021</option>
-          <option value="2020">2020</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="semester">Select Semester</label>
-        <select id="semester" name="semester" required>
-          <option value="">-- Select Semester --</option>
-          <option value="1">1st Semester</option>
-          <option value="2">2nd Semester</option>
-          <option value="3">3rd Semester</option>
-          <option value="4">4th Semester</option>
-          <option value="5">5th Semester</option>
-          <option value="6">6th Semester</option>
-          <option value="7">7th Semester</option>
-          <option value="8">8th Semester</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <button type="submit" id="searchButton">Search Papers</button>
-        <div style="text-align: center; margin-top: 20px;">
-          <a href="/doubt/ask" class="ask-doubt-btn"> Ask here!</a>
-        </div>
-        
-      </div>
-    </form>
-  </section>
-
-  <!-- Display question papers after search -->
-  <section id="searchResults">
-    <h3>Question Papers</h3>
-    <ul id="paperList">
-      <% if (typeof searched !== 'undefined' && searched) { %>
-        <% if (questionPapers && questionPapers.length > 0) { %>
-          <% questionPapers.forEach(paper => { %>
-            <li>
-              <span><%= paper.subject %> - <%= paper.year %> - <%= paper.semester %></span>
-              <button class="download-btn" data-id="<%= paper._id %>">Download</button>
-            </li>
-          <% }) %>
-        <% } else { %>
-          <li>No question papers found for the selected filters.</li>
+    <% } else if (!semester) { %>
+      <h1><%= branch %> - Select Semester</h1>
+      <div class="branches">
+        <% for (let i = 1; i <= 8; i++) { %>
+          <div class="branch-card">
+            <h2>Semester <%= i %></h2>
+            <a href="/pyq/<%= branch %>/sem<%= i %>"><button>Click Here</button></a>
+          </div>
         <% } %>
-      <% } else { %>
-        <li>No filters applied.</li>
+      </div>
+    <% } else { %>
+      <!-- Rendering question papers -->
+      <h1><%= branch %> - Semester <%= semester %> Question Papers</h1>
+
+      <% if (typeof searched !== 'undefined' && searched) { %>
+        <section class="results-section">
+          <h2>Results for <%= branch %> - Semester <%= semester %></h2>
+
+          <% if ((!questionPapers || questionPapers.length === 0) && (!files || files.length === 0)) { %>
+            <p><%= message || 'No question papers found.' %></p>
+          <% } else { %>
+
+            <% if (questionPapers && questionPapers.length > 0) { %>
+              <h3>Database Uploaded Question Papers</h3>
+              <div class="paper-list">
+                <% questionPapers.forEach(paper => { %>
+                  <div class="paper-item">
+                    <span><%= paper.fileName %></span>
+                    <a href="/pyq/download/<%= paper._id %>" class="download-btn">Download</a>
+                  </div>
+                <% }) %>
+              </div>
+            <% } %>
+
+            <% if (files && files.length > 0) { %>
+              <h3>Uploaded Files (from local folder)</h3>
+              <div class="paper-list">
+                <% files.forEach(file => { %>
+                  <div class="paper-item">
+                    <span><%= file %></span>
+                    <a href="/uploads/<%= branch %>/sem<%= semester %>/<%= file %>" class="download-btn" download>Download</a>
+                  </div>
+                <% }) %>
+              </div>
+            <% } %>
+
+          <% } %>
+        </section>
       <% } %>
-    </ul>
-  </section>
+    <% } %>
+  </main>
 
-  <!-- Upload Section (for Admin only) -->
-  <% if (user && user.role === 'admin') { %>
-    <section class="upload-container">
-      <h2>Upload Question Paper</h2>
-      <form action="/pyq/upload" method="POST" enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="uploadBranch">Select Branch</label>
-          <select name="branch" id="uploadBranch" required>
-            <option value="CSE">CSE</option>
-            <option value="AIML">AIML</option>
-            <option value="DS">Data Science</option>
-            <option value="IoT">IoT</option>
-            <option value="ECE">ECE</option>
-            <option value="Electrical">Electrical</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="uploadSemester">Select Semester</label>
-          <select name="semester" id="uploadSemester" required>
-            <option value="1">Semester 1</option>
-            <option value="2">Semester 2</option>
-            <option value="3">Semester 3</option>
-            <option value="4">Semester 4</option>
-            <option value="5">Semester 5</option>
-            <option value="6">Semester 6</option>
-            <option value="7">Semester 7</option>
-            <option value="8">Semester 8</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="uploadYear">Select Year</label>
-          <select name="year" id="uploadYear" required>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-            <option value="2020">2020</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="uploadSubject">Subject</label>
-          <input type="text" name="subject" id="uploadSubject" required />
-        </div>
-
-        <div class="form-group">
-          <label for="pdfFile">Choose PYQ PDF</label>
-          <input type="file" name="pdfFile" required />
-        </div>
-
-        <button type="submit">Upload PYQ</button>
-      </form>
-    </section>
-  <% } %>
-</main>
-
-<%- include('partials/footer') %> <!-- Include the footer -->
-
-<!-- CSS & JS -->
-<link rel="stylesheet" href="/css/pyq.css">
-<script src="/js/scriptt.js"></script>
-<script src="/js/pyq.js"></script>
+  <%- include("partials/footer") %>
+</body>
+</html>

@@ -4,11 +4,10 @@ const mongoose = require('mongoose');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override'); 
-const assistantRoutes = require('./routes/assistant');
-const apiRoutes = require('./routes/api');
 const pyqRoutes = require('./routes/pyq');
 const authRoutes = require('./routes/auth');
-const doubtRoutes = require('./routes/doubt');
+
+
 
 const app = express();
 
@@ -35,16 +34,19 @@ app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
-app.use('/assistant', assistantRoutes);
-app.use('/api', apiRoutes);
+
+
 app.use('/', authRoutes); 
 app.use('/pyq', pyqRoutes); 
-app.use('/doubt', doubtRoutes); 
+
 
 // 404 error handler
 app.use((req, res, next) => {
   res.status(404).render('404');
 });
+
+
+
 
 // Global error handler
 app.use((err, req, res, next) => {

@@ -1,4 +1,4 @@
-/* Reset some defaults */
+
 * {
     margin: 0;
     padding: 0;
@@ -13,7 +13,7 @@
     background: #f4f8fc;
   }
   
-  /* Center the signup form */
+
   .signup-container {
     flex: 1;
     display: flex;
@@ -76,7 +76,7 @@
     background-color: #1e874b;
   }
   
-  /* Footer styles */
+ 
   footer {
     background-color: #2c3e50;
     color: white;

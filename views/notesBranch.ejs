@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Notes - Semester <%= semester %></title>
+  <link rel="stylesheet" href="/css/pyq.css">
+</head>
+<body>
+  <%- include('partials/header') %>
+  
+  <main class="branch-container">
+    <h1>Semester <%= semester %> - Select Branch</h1>
+    
+    <!-- List of branches -->
+    <div class="branches">
+      <% branches.forEach(branch => { %>
+        <div class="branch-card">
+          <h2><%= branch %></h2>
+          <!-- Link to the page where users can view notes for this branch and semester -->
+          <a href="/pyq/notes/<%= branch %>/sem<%= semester %>">
+            <button>View Notes</button>
+          </a>
+        </div>
+      <% }) %>
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

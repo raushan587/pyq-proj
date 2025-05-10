@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-// Setup Nodemailer transport
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -14,7 +13,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Send verification email
+
 const sendVerificationEmail = async (user, req) => {
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
@@ -22,7 +21,7 @@ const sendVerificationEmail = async (user, req) => {
   const verificationUrl = `${req.protocol}://${req.get('host')}/verify-email?token=${token}`;
 
   await transporter.sendMail({
-    from: process.env.GMAIL_USER, // Use the correct environment variable
+    from: process.env.GMAIL_USER, 
     to: user.email,
     subject: 'Verify Your Email',
     html: `<p>Hello ${user.username},</p>
@@ -31,7 +30,7 @@ const sendVerificationEmail = async (user, req) => {
   });
 };
 
-// LOGIN - User login functionality
+// LOGIN 
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -69,7 +68,7 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-// SIGNUP - User signup functionality
+// SIGNUP 
 exports.signupUser = async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
@@ -82,7 +81,7 @@ exports.signupUser = async (req, res) => {
   }
 
   try {
-    // Log the signup attempt for debugging
+    
     console.log('Signup attempt with email:', email);
 
     const existingEmail = await User.findOne({ email });
@@ -93,19 +92,19 @@ exports.signupUser = async (req, res) => {
 
     console.log('Proceeding to save user with email:', email);
 
-    // Hash the password before saving
+    
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
-      isVerified: false, // New users are not verified initially
+      isVerified: false, 
     });
 
     await newUser.save();
 
-    // Send verification email after user is created
+   
     await sendVerificationEmail(newUser, req);
 
     res.status(200).send('Signup successful! Please check your email to verify your account.');
@@ -115,7 +114,7 @@ exports.signupUser = async (req, res) => {
   }
 };
 
-// VERIFY EMAIL - Email verification functionality
+
 exports.verifyEmail = async (req, res) => {
   const { token } = req.query;
 
